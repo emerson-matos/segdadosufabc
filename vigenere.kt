@@ -1,20 +1,22 @@
+import java.io.File
 import java.lang.StringBuilder
 import kotlin.reflect.KFunction2
 import kotlin.reflect.KFunction3
 
-const val primeiraLetra = 65
-const val primeiraLetraVisivel = 97
+const val primeiraLetra = 32
+const val primeiraLetraVisivel = 32
 const val chave = "iamie xistt hatis cert"
-const val mensagem = "MACHI NESCA NNOTT HINK"
+const val mensagem = "MACHi NESCA NNOTT HINK"
 
 fun main(args: Array<String>) {
     val (chaveOpcional, mensagemOpcional) = lerInputChaveMensagem()
     println("Chave que será utilizada será \\$chaveOpcional\\ e mensagem que será utilizada será \\$mensagemOpcional\\")
-    val faixaLetras = 65..90
+    val faixaLetras = primeiraLetra..126
     val n = faixaLetras.count()
+    println(n)
     val tempoInicial = System.currentTimeMillis()
-    val mensagemCifrada = fazAMagica(chaveOpcional, mensagemOpcional, n, ::encode)
-    val mensagemDecifrada = fazAMagica(chaveOpcional, mensagemCifrada, n, ::decode)
+    val mensagemCifrada = fazAMagica(chave, mensagem, n, ::encode)
+    val mensagemDecifrada = fazAMagica( chave, mensagemCifrada , n, ::decode)
     println("Sua mensagem cifrada é \t\t$mensagemCifrada")
     println("Sua mensagem decifrada é \t$mensagemDecifrada")
     println("Tempo decorrido foi de ${System.currentTimeMillis().minus(tempoInicial)} ms")
@@ -35,15 +37,10 @@ private fun lerInputChaveMensagem(): Pair<String, String> {
         Pair(chave, mensagem)
 }
 
-fun fazAMagica(chave: String, mensagem: String, n: Int, funcao: KFunction3<Int, Int, Int, Char>): String {
+fun fazAMagica(chaveUp: String, mensagemUp: String, n: Int, funcao: KFunction3<Int, Int, Int, Char>): String {
     val mensagemCifrada = StringBuilder()
-    val mensagemUp = mensagem.toUpperCase()
-    val chaveUp = chave.toUpperCase()
     for ((i, c) in mensagemUp.withIndex()) {
-        val letraAdicionada = if (!c.isWhitespace())
-            funcao.invoke(c.toInt(), chaveUp.elementAt(i.rem(chaveUp.length)).toInt(), n)
-        else
-            c
+        val letraAdicionada = funcao.invoke(c.toInt(), chaveUp.elementAt(i.rem(chaveUp.length)).toInt(), n)
         mensagemCifrada.append(letraAdicionada)
     }
     return mensagemCifrada.toString()
